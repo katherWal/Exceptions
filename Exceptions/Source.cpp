@@ -18,8 +18,52 @@ public:
 	}
 };
 
+class invalidRangeException : public std::exception {
+public:
+	const char* what() {
+		return "Character is not alphabetical or has switched cases.";
+	}
+};
+
 int main() {
-	cout << character('a', 1) << endl;
+	char start;
+	int offset;
+	char temp;
+
+	bool again = true;
+
+	while (again) {
+		cout << "\nEnter a letter: ";
+		cin >> start;
+		cout << "\nEnter a number to offset the letter by: ";
+		cin >> offset;
+
+		try {
+			if (!isalpha(start)) {
+				throw invalidCharacterException();
+			}
+			temp = start + offset;
+			if (!isalpha(temp) || (start <= 90 && temp >= 97)) {
+				throw invalidRangeException();
+			}
+			else if (!isalpha(temp) || (start >= 97 && temp <= 90)) {
+				throw invalidRangeException();
+			}
+			
+			cout << "\nYour character is '" << character(start, offset) << "'";
+			cout << "\nProcess another character? Enter 1 for yes else enter 0: ";
+			cin >> again;
+
+		}
+		catch (invalidCharacterException ice) {
+			cout << "\n" << ice.what() << endl;
+		}
+		catch (invalidRangeException ire) {
+			cout << "\n" << ire.what() << endl;
+		}
+
+		
+	}
 
 
 	cout << endl;
@@ -28,12 +72,5 @@ int main() {
 }
 
 char character(char start, int offset) {
-	try {
-		if (!isalpha(start)) {
-			throw invalidCharacterException();
-		}
-	}
-	catch (invalidCharacterException ice) {
-		cout << ice.what() << endl;
-	}
+	return start + offset;
 }
